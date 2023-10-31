@@ -369,7 +369,7 @@ type Acidente interface {
 
 // Implementação da struct AcidenteInfo que implementa a interface Acidente
 type AcidenteInfo struct {
-	Tipo       string `json:"Tipo"`
+	Tipo       string `json:"tipo"`
 	Severidade int    `json:"severidade"`
 	Vitimas    int    `json:"vitimas"`
 	Data       string `json:"data"`
@@ -696,9 +696,9 @@ func (g *CarTypeGenerator) Generate() string {
 
 
 func (g *PollutionGenerator) Generate() float64 {
-	randomValue := geradorPollution.Float64()
-	pollutionRate := randomValue * pollution[(&CarColorGenerator{}).Generate()]
-	return pollutionRate
+    randomValue := geradorPollution.Float64()
+    pollutionRate := randomValue * pollution[(&CarBrandGenerator{}).Generate()]
+    return pollutionRate
 }
 
 func (g *AcidenteGenerator) Generate() *AcidenteInfo {
@@ -911,7 +911,7 @@ func geraSeveridadeAcidente() AcidenteInfo {
 // Função para gerar um acidente
 func AcidenteFactory() *AcidenteInfo {
 	randomValue := rand.Float64()
-	if randomValue < 0.1 {
+	if randomValue < 3.1 {
 		tipo := geraTipoAcidente()
 		severidade := geraSeveridadeAcidente()
 		data := (&DateGenerator{}).Generate()
@@ -948,14 +948,14 @@ func geraVitimas() int {
 
 
 type TrafficGenerator struct {
-	Car       CarInfo       `json:"car"`
+	TrafficInfo      CarInfo       `json:"trafficInfo"`
 	Infraction ViolationInfo `json:"infraction"`
 	Acidente  AcidenteInfo  `json:"acidente"`
 }
 
 func NewTrafficGenerator() *TrafficGenerator {
 	return &TrafficGenerator{
-		Car:       *CarFactory(),
+		TrafficInfo:       *CarFactory(),
 		Acidente:  *AcidenteFactory(),
 		Infraction: *ViolationFactory(),
 	}
