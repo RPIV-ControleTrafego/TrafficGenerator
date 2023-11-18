@@ -288,8 +288,8 @@ var (
 	geradorCarType        = rand.New(randSource)
 	geradorCarColor       = rand.New(randSource)
 	geradorCarBrand       = rand.New(randSource)
-	geradorOwnerName      = rand.New(randSource)
-	geradorOwnerSurName   = rand.New(randSource)
+	// geradorOwnerName      = rand.New(randSource)
+	// geradorOwnerSurName   = rand.New(randSource)
 	geradorDate           = rand.New(randSource)
 	geradorMaxSpeed       = rand.New(randSource)
 	geradorAddress        = rand.New(randSource)
@@ -308,7 +308,7 @@ type CarInfo struct {
 	CarType           string `json:"carType"`
 	CarColor          string `json:"carColor"`
 	CarBrand          string `json:"carBrand"`
-	VeiculeOwnerName  string `json:"veiculeOwnerName"`
+	// VeiculeOwnerName  string `json:"veiculeOwnerName"`
 	VehicleOwnerCPF   string `json:"veiculeOwneCPF"`
 	Time              string `json:"time"`
 	Date              string `json:"date"`
@@ -329,6 +329,7 @@ type TrafficInfo interface {
 
 type ViolationInfo struct {
 	Violation string
+	IsPaid	bool
 }
 
 func (vi *ViolationInfo) ViolationType() string {
@@ -337,6 +338,7 @@ func (vi *ViolationInfo) ViolationType() string {
 
 type InfractionInfo interface {
 	ViolationType() string
+	IsPaidFine() bool
 }
 
 type ViolationGenerator struct {
@@ -346,6 +348,11 @@ type ViolationGenerator struct {
 
 type Generator struct {
 	randSource *rand.Rand
+}
+
+
+func(i* ViolationInfo) IsPaidFine() bool {
+	return false
 }
 
 func NewGenerator() *Generator {
@@ -385,13 +392,13 @@ type VehicleOwnerCpfGenerator struct {
 }
 
 
-type VehicleOwnerNameGenerator struct {
-	*Generator
-}
+// type VehicleOwnerNameGenerator struct {
+// 	*Generator
+// }
 
-type VehicleOwnerSurNameGenerator struct {
-	*Generator
-}
+// type VehicleOwnerSurNameGenerator struct {
+// 	*Generator
+// }
 
 type DateGenerator struct {
 	*Generator
@@ -459,20 +466,20 @@ return &VehicleOwnerCpfGenerator{
 }		
 }
 
-func NewVehicleOwnerNameGenerator() *VehicleOwnerNameGenerator {
-	generator := NewGenerator()
-	return &VehicleOwnerNameGenerator{
-		Generator: generator,
-	}
+// func NewVehicleOwnerNameGenerator() *VehicleOwnerNameGenerator {
+// 	generator := NewGenerator()
+// 	return &VehicleOwnerNameGenerator{
+// 		Generator: generator,
+// 	}
 
-}
+// }
 
-func NewVehicleOwnerSurNameGenerator() *VehicleOwnerSurNameGenerator {
-	generator := NewGenerator()
-	return &VehicleOwnerSurNameGenerator{
-		Generator: generator,
-	}
-}
+// func NewVehicleOwnerSurNameGenerator() *VehicleOwnerSurNameGenerator {
+// 	generator := NewGenerator()
+// 	return &VehicleOwnerSurNameGenerator{
+// 		Generator: generator,
+// 	}
+// }
 
 func NewDateGenerator() *DateGenerator {
 	generator := NewGenerator()
@@ -607,15 +614,15 @@ func (g *VehicleOwnerCpfGenerator) Generate() string {
 
 
 
-func (g *VehicleOwnerNameGenerator) Generate() string {
-	randomIndex := geradorOwnerName.Intn(len(nomes))
-	return nomes[randomIndex]
-}
+// func (g *VehicleOwnerNameGenerator) Generate() string {
+// 	randomIndex := geradorOwnerName.Intn(len(nomes))
+// 	return nomes[randomIndex]
+// }
 
-func (g *VehicleOwnerSurNameGenerator) Generate() string {
-	randomIndex := geradorOwnerSurName.Intn(len(sobrenomes))
-	return sobrenomes[randomIndex]
-}
+// func (g *VehicleOwnerSurNameGenerator) Generate() string {
+// 	randomIndex := geradorOwnerSurName.Intn(len(sobrenomes))
+// 	return sobrenomes[randomIndex]
+// }
 
 func (g *DateGenerator) Generate() string {
 	year := geradorDate.Intn(20) + 2010
@@ -736,7 +743,7 @@ func CarFactory() *CarInfo {
 	carType := NewCarTypeGenerator().Generate()
 	carColor := NewCarColorGenerator().Generate()
 	carBrand := NewCarBrandGenerator().Generate()
-	veiculeOwnerName := NewVehicleOwnerNameGenerator().Generate()
+	// veiculeOwnerName := NewVehicleOwnerNameGenerator().Generate()
 	vehicleOwnerCPF := NewVehicleOwnerCpfGenerator().Generate()
 	time := NewTimeGenerator().Generate()
 	date := NewDateGenerator().Generate()
@@ -753,7 +760,7 @@ func CarFactory() *CarInfo {
 		CarType:           carType,
 		CarColor:          carColor,
 		CarBrand:          carBrand,
-		VeiculeOwnerName:  veiculeOwnerName,
+		// VeiculeOwnerName:  veiculeOwnerName,
 		VehicleOwnerCPF:   vehicleOwnerCPF,
 		Time:              time,
 		Date:              date,
@@ -794,9 +801,12 @@ func (g *ViolationGenerator) GenerateViolation() InfractionInfo {
 		"Other",
 	}
 
+	isPaid := ViolationFactory().IsPaidFine()
+
 	randomIndex := g.randSource.Intn(len(violations))
 	return &ViolationInfo{
 		Violation: violations[randomIndex],
+		IsPaid:    isPaid,
 	}
 }
 
