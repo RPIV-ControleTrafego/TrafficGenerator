@@ -300,6 +300,8 @@ var (
 	geradorViolation      = rand.New(randSource)
 	geradorPollution      = rand.New(randSource)
 	geradorAcidente   	  = rand.New(randSource)
+	geradorAge			  = rand.New(randSource)
+	geradorSex			  = rand.New(randSource)
 )
 
 
@@ -319,6 +321,8 @@ type CarInfo struct {
 	Direction         string `json:"direction"`
 	StreetDirection   string `json:"streetDirection"`
 	PollutionRate     float64 `json:"pollutionLevel"`
+	Age 			 int `json:"age"`
+	Sex 			 string `json:"sex"`
 }
 
 
@@ -392,6 +396,16 @@ type VehicleOwnerCpfGenerator struct {
 }
 
 
+type AgeGenerator struct {
+	*Generator
+}
+
+type SexGenerator struct {
+	*Generator
+}
+
+
+
 // type VehicleOwnerNameGenerator struct {
 // 	*Generator
 // }
@@ -457,6 +471,23 @@ func NewCarPlateGenerator() *CarPlateGenerator {
         Generator: generator,  
     }
 }
+
+
+func NewAgeGenerator() *AgeGenerator {
+	generator := NewGenerator()
+	return &AgeGenerator{
+		Generator: generator,
+	}
+}
+
+func NewSexGenerator() *SexGenerator {
+	generator := NewGenerator()
+	return &SexGenerator{
+		Generator: generator,
+	}
+}
+
+
 
 
 func NewVehicleOwnerCpfGenerator() *VehicleOwnerCpfGenerator {
@@ -574,6 +605,12 @@ func NewAcidenteGenerator() *AcidenteGenerator {
 }
 
 
+func (g *AgeGenerator) Generate() int {
+	return geradorAge.Intn(100) + 18
+}
+
+
+
 
 
 func (g *CarPlateGenerator) Generate() string {
@@ -600,7 +637,6 @@ func (g *CarPlateGenerator) Generate() string {
 
 
 
-
 func (g *VehicleOwnerCpfGenerator) Generate() string {
 	var cpf string
 	for i := 0; i < 11; i++ {
@@ -614,15 +650,6 @@ func (g *VehicleOwnerCpfGenerator) Generate() string {
 
 
 
-// func (g *VehicleOwnerNameGenerator) Generate() string {
-// 	randomIndex := geradorOwnerName.Intn(len(nomes))
-// 	return nomes[randomIndex]
-// }
-
-// func (g *VehicleOwnerSurNameGenerator) Generate() string {
-// 	randomIndex := geradorOwnerSurName.Intn(len(sobrenomes))
-// 	return sobrenomes[randomIndex]
-// }
 
 func (g *DateGenerator) Generate() string {
 	year := geradorDate.Intn(20) + 2010
@@ -734,8 +761,14 @@ func (c *CarInfo) calculatePollution() {
 }
 
 
-
-
+func (g *SexGenerator) Generate() string {
+	num := g.randSource.Intn(2)
+	if num == 0 {
+		return "M"
+	} else {
+		return "F"
+	}
+}
 
 
 func CarFactory() *CarInfo {
@@ -754,6 +787,8 @@ func CarFactory() *CarInfo {
 	direction := NewDirectionGenerator().Generate()
 	streetDirection := NewStreetDirectionGenerator().Generate()
 	pollutionRate := NewPollutionGenerator().Generate()
+	age := NewAgeGenerator().Generate()
+	sex := NewSexGenerator().Generate()
 
 	return &CarInfo{
 		CarPlate:          carPlate,
@@ -771,6 +806,9 @@ func CarFactory() *CarInfo {
 		Direction:         direction,
 		StreetDirection:   streetDirection,
 		PollutionRate:     pollutionRate,
+		Age: 			   age,
+		Sex:			   sex,
+		
 	}
 }
 
