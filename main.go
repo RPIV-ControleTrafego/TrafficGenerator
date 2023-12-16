@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"math/rand"
 	"time"
-	"traffic/generator/kafka" 
+	"traffic/generator/kafka"
 
+	"github.com/google/uuid"
 )
 
 
@@ -306,6 +307,7 @@ var (
 
 
 type CarInfo struct {
+	UUID              string `json:"idTraffic"`
 	CarPlate          string `json:"carPlate"`
 	CarType           string `json:"carType"`
 	CarColor          string `json:"carColor"`
@@ -332,6 +334,7 @@ type TrafficInfo interface {
 }
 
 type ViolationInfo struct {
+	UUID      string
 	Violation string
 	IsPaid	bool
 }
@@ -374,12 +377,14 @@ type Acidente interface {
 	NumeroVitimas() int
 	DataAcidente() string
 	HoraAcidente() string
+
 	
 	
 }
 
 // Implementação da struct AcidenteInfo que implementa a interface Acidente
 type AcidenteInfo struct {
+	UUID 	 string `json:"idAccident"`
 	Tipo       string `json:"tipo"`
 	Severidade int    `json:"severidade"`
 	Vitimas    int    `json:"vitimas"`
@@ -738,6 +743,7 @@ func (g *PollutionGenerator) Generate() float64 {
 func (g *AcidenteGenerator) Generate() *AcidenteInfo {
 	randomValue := rand.Float64()
 	if randomValue < 0.1 {
+		uuid := uuidGenerator()
 		tipo := geraTipoAcidente()
 		severidade := geraSeveridadeAcidente()
 		data := (&DateGenerator{}).Generate()
@@ -745,6 +751,7 @@ func (g *AcidenteGenerator) Generate() *AcidenteInfo {
 		vitimas := geraVitimas()
 
 		return &AcidenteInfo{
+			UUID: 		uuid,
 			Tipo:       tipo.TipoAcidente(),
 			Severidade: severidade.NivelSeveridade(),
 			Vitimas:    vitimas,
@@ -772,6 +779,7 @@ func (g *SexGenerator) Generate() string {
 
 
 func CarFactory() *CarInfo {
+	uuid := uuidGenerator()
 	carPlate := NewCarPlateGenerator().Generate()
 	carType := NewCarTypeGenerator().Generate()
 	carColor := NewCarColorGenerator().Generate()
@@ -791,6 +799,7 @@ func CarFactory() *CarInfo {
 	sex := NewSexGenerator().Generate()
 
 	return &CarInfo{
+		UUID:              uuid,
 		CarPlate:          carPlate,
 		CarType:           carType,
 		CarColor:          carColor,
@@ -840,9 +849,10 @@ func (g *ViolationGenerator) GenerateViolation() InfractionInfo {
 	}
 
 	isPaid := ViolationFactory().IsPaidFine()
-
+	uuid := uuidGenerator()
 	randomIndex := g.randSource.Intn(len(violations))
 	return &ViolationInfo{
+		UUID:      uuid,
 		Violation: violations[randomIndex],
 		IsPaid:    isPaid,
 	}
@@ -876,7 +886,7 @@ func main() {
 
 	defer producer.Producer.Close()
 
-	// Start a goroutine to generate information every 3 seconds
+	
 	go func() {
 		for {
 			trafficGen := NewTrafficGenerator()
@@ -896,7 +906,7 @@ func main() {
 		}
 	}()
 
-	// Keep the program running indefinitely
+	
 	select {}
 }
 
@@ -1008,3 +1018,12 @@ func NewTrafficGenerator() *TrafficGenerator {
 		Infraction: *ViolationFactory(),
 	}
 }
+
+
+
+func uuidGenerator() string {
+	uuid := uuid.New().String()
+	return uuid
+}
+
+
