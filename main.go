@@ -325,6 +325,7 @@ type CarInfo struct {
 	PollutionRate     float64 `json:"pollutionLevel"`
 	Age 			 int `json:"age"`
 	Sex 			 string `json:"sex"`
+	Infraction        string `json:"violation"`
 }
 
 
@@ -647,11 +648,16 @@ func (g *VehicleOwnerCpfGenerator) Generate() string {
 	for i := 0; i < 11; i++ {
 		randomDigit := geradorCarPlate.Intn(10)
 		cpf += fmt.Sprintf("%d", randomDigit)
+		if i == 2 || i == 5 {
+			cpf += "." // Add dot after the third and sixth digits
+		} else if i == 8 {
+			cpf += "-" // Add hyphen after the ninth digit
+		}
 	}
 
 	return cpf
-
 }
+
 
 
 
@@ -797,6 +803,8 @@ func CarFactory() *CarInfo {
 	pollutionRate := NewPollutionGenerator().Generate()
 	age := NewAgeGenerator().Generate()
 	sex := NewSexGenerator().Generate()
+	violation := NewViolationGenerator().ViolationType()
+
 
 	return &CarInfo{
 		UUID:              uuid,
@@ -817,9 +825,55 @@ func CarFactory() *CarInfo {
 		PollutionRate:     pollutionRate,
 		Age: 			   age,
 		Sex:			   sex,
+		Infraction:        violation,
 		
 	}
 }
+
+func NewViolationGenerator() *ViolationGenerator {
+	randSource := rand.NewSource(time.Now().UnixNano())
+	return &ViolationGenerator{
+		randSource: rand.New(randSource),
+	}
+}
+
+
+// Generate only violation name
+func (c *CarInfo) ViolationGenereator() string {
+	violationRate := 0.1
+	
+
+	if rand.Float64() < violationRate {
+		return "" // No violation
+	}
+
+	violations := []string{
+		"Speeding",
+		"Running a red light",
+		"Running a stop sign",
+		"Reckless driving",
+		"Driving under the influence",
+		"Texting while driving",
+		"Careless driving",
+		"Seat belt violation",
+		"Wrong way driving",
+		"Tailgating",
+		"Failure to yield",
+		"Driving without lights",
+		"Failure to signal",
+		"Driving too slow",
+		"Driving without a license or with a suspended license",
+		"Improper passing",
+		"Failure to stop for a school bus",
+		"Other",
+	}
+
+	randomIndex := rand.Intn(len(violations))
+	return violations[randomIndex]
+}
+
+
+
 
 func (g *ViolationGenerator) GenerateViolation() InfractionInfo {
 	violationRate := 0.1
@@ -857,6 +911,43 @@ func (g *ViolationGenerator) GenerateViolation() InfractionInfo {
 		IsPaid:    isPaid,
 	}
 }
+
+
+
+func (g *ViolationGenerator) ViolationType() string {
+    violationRate := 0.1
+    if g.randSource.Float64() < violationRate {
+        return "" // No violation
+    }
+
+    violations := []string{
+        "Speeding",
+        "Running a red light",
+        "Running a stop sign",
+        "Reckless driving",
+        "Driving under the influence",
+        "Texting while driving",
+        "Careless driving",
+        "Seat belt violation",
+        "Wrong way driving",
+        "Tailgating",
+        "Failure to yield",
+        "Driving without lights",
+        "Failure to signal",
+        "Driving too slow",
+        "Driving without a license or with a suspended license",
+        "Improper passing",
+        "Failure to stop for a school bus",
+        "Other",
+    }
+
+    randomIndex := rand.Intn(len(violations))
+    return violations[randomIndex]
+}
+
+
+
+
 
 func ViolationFactory() *ViolationInfo {
 	generator := &ViolationGenerator{
