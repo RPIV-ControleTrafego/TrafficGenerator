@@ -1,18 +1,12 @@
 package main
-
 import (
 	"encoding/json"
 	"fmt"
 	"math/rand"
 	"time"
 	"traffic/generator/kafka"
-
 	"github.com/google/uuid"
 )
-
-
-
-
 var ruas = []string{
 	"Marquês de Olinda",
 	"Rua da Aurora",
@@ -65,7 +59,6 @@ var ruas = []string{
 	"Rua Praça do Carmo",
 	"Rua Jośe Carlos Hantschel",
 	"Rua Henrique Liebl",
-
 }
 var bairros = []string{
 	"Centro",
@@ -88,26 +81,19 @@ var bairros = []string{
 	"Rio Cerro I",
 	"Rio Cerro II",
 	"Rio Cerro III",
-
 }
-
-
 var direcoes = []string{
 	"North",
 	"South",
 	"East",
 	"West",
 }
-
 var streetDirections = []string{
 	"North",
 	"South",
 	"East",
 	"West",
 }
-
-
-
 var marcas = []string{
 	"Alfa Romeo",
 	"Audi",
@@ -127,9 +113,6 @@ var marcas = []string{
 	"Jaguar",
 	"Jeep",
 }
-
-
-
 var carTypes = map[string][]string{
 	"Alfa Romeo":   {"Sedan", "Sports Car", "Coupe"},
 	"Audi":         {"Sedan", "SUV", "Sports Car", "Station Wagon"},
@@ -149,9 +132,6 @@ var carTypes = map[string][]string{
 	"Jaguar":       {"Sedan", "SUV", "Coupe"},
 	"Jeep":         {"SUV"},
 }
-
-
-
 var pollution = map[string]float64{
 	"Alfa Romeo":  0.25,
 	"Audi":        0.3,
@@ -171,8 +151,6 @@ var pollution = map[string]float64{
 	"Jaguar":      0.5,
 	"Jeep":        0.5,
 }
-
-
 //array de nome
 var nomes = []string{
 	"João",								
@@ -215,8 +193,6 @@ var nomes = []string{
 	"Lucas",
 	"Leonardo",
 }
-
-
 var sobrenomes = []string{
 	"Silva",
 	"Santos",
@@ -251,8 +227,6 @@ var sobrenomes = []string{
 	"Munt",
 	"Reckziegel",
 }
-
-
 var acidentes = []string{
     "Front Collision",
     "Rear Collision",
@@ -278,13 +252,9 @@ var acidentes = []string{
     "Vehicle Fire",
     "Run-off Road",
 }
-
-
-
 var (
 	// Inicialize os geradores com uma seed única
 	randSource = rand.NewSource(time.Now().UnixNano())
-
 	geradorCarPlate       = rand.New(randSource)
 	geradorCarType        = rand.New(randSource)
 	geradorCarColor       = rand.New(randSource)
@@ -304,8 +274,6 @@ var (
 	geradorAge			  = rand.New(randSource)
 	geradorSex			  = rand.New(randSource)
 )
-
-
 type CarInfo struct {
 	UUID              string `json:"idTraffic"`
 	CarPlate          string `json:"carPlate"`
@@ -327,50 +295,36 @@ type CarInfo struct {
 	Sex 			 string `json:"sex"`
 	Infraction        string `json:"violation"`
 }
-
-
-
 type TrafficInfo interface {
     Generate() string
 }
-
 type ViolationInfo struct {
 	UUID      string
 	Violation string
 	IsPaid	bool
 }
-
 func (vi *ViolationInfo) ViolationType() string {
 	return vi.Violation
 }
-
 type InfractionInfo interface {
 	ViolationType() string
 	IsPaidFine() bool
 }
-
 type ViolationGenerator struct {
 	randSource *rand.Rand
 }
-
-
 type Generator struct {
 	randSource *rand.Rand
 }
-
-
 func(i* ViolationInfo) IsPaidFine() bool {
 	return false
 }
-
 func NewGenerator() *Generator {
 	randSource := rand.NewSource(time.Now().UnixNano())
 	return &Generator{
 		randSource: rand.New(randSource),
 	}
 }
-
-
 // Definição da interface Acidente
 type Acidente interface {
 	TipoAcidente() string
@@ -378,11 +332,7 @@ type Acidente interface {
 	NumeroVitimas() int
 	DataAcidente() string
 	HoraAcidente() string
-
-	
-	
 }
-
 // Implementação da struct AcidenteInfo que implementa a interface Acidente
 type AcidenteInfo struct {
 	UUID 	 string `json:"idAccident"`
@@ -392,257 +342,192 @@ type AcidenteInfo struct {
 	Data       string `json:"data"`
 	Hora       string `json:"hora"`
 }
-
 type CarPlateGenerator struct {
 	*Generator
 }
-
 type VehicleOwnerCpfGenerator struct {
 	*Generator
 }
-
-
 type AgeGenerator struct {
 	*Generator
 }
-
 type SexGenerator struct {
 	*Generator
 }
-
-
-
 // type VehicleOwnerNameGenerator struct {
 // 	*Generator
 // }
-
 // type VehicleOwnerSurNameGenerator struct {
 // 	*Generator
 // }
-
 type DateGenerator struct {
 	*Generator
 }
-
 type MaxSpeedGenerator struct {
 	*Generator
 }
-
 type TimeGenerator struct {
 	*Generator
 }
-
 type SpeedGenerator struct {
 	*Generator
 }
-
 type AddressGenerator struct {
 	*Generator
 }
-
 type DirectionGenerator struct {
 	*Generator
 }
-
 type StreetDirectionGenerator struct {
 	*Generator
 }
-
-
-
 type CarColorGenerator struct {
 	*Generator
 }
-
 type CarBrandGenerator struct {
 	*Generator
 }
-
 type CarTypeGenerator struct {
 	*Generator
 }
-
 type PollutionGenerator struct {
 	*Generator
 }
-
 type AcidenteGenerator struct {
 	*Generator
 }
-
-
 func NewCarPlateGenerator() *CarPlateGenerator {
     generator := NewGenerator()  // Cria um novo gerador
     return &CarPlateGenerator{
         Generator: generator,  
     }
 }
-
-
 func NewAgeGenerator() *AgeGenerator {
 	generator := NewGenerator()
 	return &AgeGenerator{
 		Generator: generator,
 	}
 }
-
 func NewSexGenerator() *SexGenerator {
 	generator := NewGenerator()
 	return &SexGenerator{
 		Generator: generator,
 	}
 }
-
-
-
-
 func NewVehicleOwnerCpfGenerator() *VehicleOwnerCpfGenerator {
 	generator := NewGenerator() 
 return &VehicleOwnerCpfGenerator{
 	Generator: generator, 
 }		
 }
-
 // func NewVehicleOwnerNameGenerator() *VehicleOwnerNameGenerator {
 // 	generator := NewGenerator()
 // 	return &VehicleOwnerNameGenerator{
 // 		Generator: generator,
 // 	}
-
 // }
-
 // func NewVehicleOwnerSurNameGenerator() *VehicleOwnerSurNameGenerator {
 // 	generator := NewGenerator()
 // 	return &VehicleOwnerSurNameGenerator{
 // 		Generator: generator,
 // 	}
 // }
-
 func NewDateGenerator() *DateGenerator {
 	generator := NewGenerator()
 	return &DateGenerator{
 		Generator: generator,
 	}
 }
-
 func NewMaxSpeedGenerator() *MaxSpeedGenerator {
 	generator := NewGenerator()
 	return &MaxSpeedGenerator{
 		Generator: generator,
 	}
 }
-
 func NewTimeGenerator() *TimeGenerator {
 	generator := NewGenerator()
 	return &TimeGenerator{
 		Generator: generator,
 	}
 }
-
 func NewSpeedGenerator() *SpeedGenerator {
 	generator := NewGenerator()
 	return &SpeedGenerator{
 		Generator: generator,
 	}
 }
-
 func NewAddressGenerator() *AddressGenerator {
 	generator := NewGenerator()
 	return &AddressGenerator{
 		Generator: generator,
 	}
 }
-
 func NewDirectionGenerator() *DirectionGenerator {
 	generator := NewGenerator()
 	return &DirectionGenerator{
 		Generator: generator,
 	}
 }
-
 func NewStreetDirectionGenerator() *StreetDirectionGenerator {
 	generator := NewGenerator()
 	return &StreetDirectionGenerator{
 		Generator: generator,
 	}
 }
-
 // func NewViolationGenerator() *ViolationGenerator {
 // 	generator := NewGenerator()
 // 	return &ViolationGenerator{
 // 		Generator: generator,
 // 	}
 // }
-
 func NewCarColorGenerator() *CarColorGenerator {
 	generator := NewGenerator()
 	return &CarColorGenerator{
 		Generator: generator,
 	}
 }
-
 func NewCarBrandGenerator() *CarBrandGenerator {
 	generator := NewGenerator()
 	return &CarBrandGenerator{
 		Generator: generator,
 	}
-
 }
-
 func NewCarTypeGenerator() *CarTypeGenerator {
 	generator := NewGenerator()
 	return &CarTypeGenerator{
 		Generator: generator,
 	}
 }
-
 func NewPollutionGenerator() *PollutionGenerator {
 	generator := NewGenerator()
 	return &PollutionGenerator{
 		Generator: generator,
 	}
 }
-
 func NewAcidenteGenerator() *AcidenteGenerator {
 	generator := NewGenerator()
 	return &AcidenteGenerator{
 		Generator: generator,
 	}
 }
-
-
 func (g *AgeGenerator) Generate() int {
 	return geradorAge.Intn(100) + 18
 }
-
-
-
-
-
 func (g *CarPlateGenerator) Generate() string {
-   
     plate := ""
     for i := 0; i < 3; i++ {
         randomLetter := rune(g.randSource.Intn(26) + 'A')
         plate += string(randomLetter)
     }
-
     // Adiciona um traço
     plate += "-"
-
     // Gera quatro números aleatórios para a placa
     for i := 0; i < 4; i++ {
         randomDigit := g.randSource.Intn(10)
         plate += fmt.Sprintf("%d", randomDigit)
     }
-
     return plate
 }
-
-
-
-
-
 func (g *VehicleOwnerCpfGenerator) Generate() string {
 	var cpf string
 	for i := 0; i < 11; i++ {
@@ -654,14 +539,8 @@ func (g *VehicleOwnerCpfGenerator) Generate() string {
 			cpf += "-" // Add hyphen after the ninth digit
 		}
 	}
-
 	return cpf
 }
-
-
-
-
-
 func (g *DateGenerator) Generate() string {
 	year := geradorDate.Intn(20) + 2010
 	month := geradorDate.Intn(12) + 1
@@ -669,83 +548,60 @@ func (g *DateGenerator) Generate() string {
 	if month == 2 && day > 28 {
 		day = 28
 	}
-
 	if month == 4 || month == 6 || month == 9 || month == 11 {
 		if day > 30 {
 			day = 30
 		}
 	}
-
 	return fmt.Sprintf("%d-%d-%d", year, month, day)
 }
-
 func (g *MaxSpeedGenerator) Generate() int {
 	return geradorMaxSpeed.Intn(180) + 30
 }
-
 func (g *TimeGenerator) Generate() string {
 	hour := geradorTime.Intn(24)
 	minute := geradorTime.Intn(60)
 	second := geradorTime.Intn(60)
-
 	return fmt.Sprintf("%d:%d:%d", hour, minute, second)
 }
-
 func (g *SpeedGenerator) Generate() float64 {
 	return geradorSpeed.Float64() * float64(new(MaxSpeedGenerator).Generate())
 }
-
 func (g *AddressGenerator) Generate() string {
 	ruas := ruas[geradorAddress.Intn(len(ruas))]
 	bairros := bairros[geradorAddress.Intn(len(bairros))]
 	return fmt.Sprintf("%s, %s", ruas, bairros)
 }
-
 func (g *DirectionGenerator) Generate() string {
 	return direcoes[geradorDirection.Intn(len(direcoes))]
 }
-
 func (g *StreetDirectionGenerator) Generate() string {
 	return streetDirections[geradorStreetDirection.Intn(len(streetDirections))]
 }
-
-
-
-
-
 func (g *CarColorGenerator) Generate() string {
 	var colors = []string{
 		"red", "blue", "yellow", "black", "white", "silver", "gray", "green", "brown", "orange", "purple", "pink", "gold", "beige", "cream", "ivory", "teal", "turquoise", "lime", "olive", "maroon", "navy", "aquamarine", "mint", "apricot", "indigo", "crimson", "azure", "fuchsia", "plum", "lavender", "magenta", "salmon", "tan", "khaki", "orchid", "peridot", "cobalt", "cerulean", "rust", "vermilion", "copper", "peach", "rose", "chartreuse", "taupe", "golden", "coral", "cyan",
 	}
-
 	return colors[geradorCarColor.Intn(len(colors))]
 }
-
 func (g *CarBrandGenerator) Generate() string {
 	return marcas[geradorCarBrand.Intn(len(marcas))]
 }
-
 func (g *CarTypeGenerator) Generate() string {
     // Obtenha uma marca de carro aleatória
     randomBrandIndex := g.randSource.Intn(len(marcas))
     brand := marcas[randomBrandIndex]
-
     // Obtenha um tipo de carro aleatório para a marca
     types := carTypes[brand]
-
     // Gere um índice aleatório para o tipo de carro
     randomTypeIndex := g.randSource.Intn(len(types))
-
     return types[randomTypeIndex]
 }
-
-
 func (g *PollutionGenerator) Generate() float64 {
     randomValue := geradorPollution.Float64()
     pollutionRate := randomValue * pollution[(&CarBrandGenerator{}).Generate()]
     return pollutionRate
 }
-
 func (g *AcidenteGenerator) Generate() *AcidenteInfo {
 	randomValue := rand.Float64()
 	if randomValue < 0.1 {
@@ -755,7 +611,6 @@ func (g *AcidenteGenerator) Generate() *AcidenteInfo {
 		data := (&DateGenerator{}).Generate()
 		hora := (&TimeGenerator{}).Generate()
 		vitimas := geraVitimas()
-
 		return &AcidenteInfo{
 			UUID: 		uuid,
 			Tipo:       tipo.TipoAcidente(),
@@ -768,12 +623,9 @@ func (g *AcidenteGenerator) Generate() *AcidenteInfo {
 		return &AcidenteInfo{}
 	}
 }
-
 func (c *CarInfo) calculatePollution() {
 	c.PollutionRate = geradorPollution.Float64() * pollution[c.CarBrand]
 }
-
-
 func (g *SexGenerator) Generate() string {
 	num := g.randSource.Intn(2)
 	if num == 0 {
@@ -782,8 +634,6 @@ func (g *SexGenerator) Generate() string {
 		return "F"
 	}
 }
-
-
 func CarFactory() *CarInfo {
 	uuid := uuidGenerator()
 	carPlate := NewCarPlateGenerator().Generate()
@@ -804,8 +654,6 @@ func CarFactory() *CarInfo {
 	age := NewAgeGenerator().Generate()
 	sex := NewSexGenerator().Generate()
 	violation := NewViolationGenerator().ViolationType()
-
-
 	return &CarInfo{
 		UUID:              uuid,
 		CarPlate:          carPlate,
@@ -826,27 +674,20 @@ func CarFactory() *CarInfo {
 		Age: 			   age,
 		Sex:			   sex,
 		Infraction:        violation,
-		
 	}
 }
-
 func NewViolationGenerator() *ViolationGenerator {
 	randSource := rand.NewSource(time.Now().UnixNano())
 	return &ViolationGenerator{
 		randSource: rand.New(randSource),
 	}
 }
-
-
 // Generate only violation name
 func (c *CarInfo) ViolationGenereator() string {
 	violationRate := 0.1
-	
-
 	if rand.Float64() < violationRate {
 		return "" // No violation
 	}
-
 	violations := []string{
 		"Speeding",
 		"Running a red light",
@@ -867,20 +708,14 @@ func (c *CarInfo) ViolationGenereator() string {
 		"Failure to stop for a school bus",
 		"Other",
 	}
-
 	randomIndex := rand.Intn(len(violations))
 	return violations[randomIndex]
 }
-
-
-
-
 func (g *ViolationGenerator) GenerateViolation() InfractionInfo {
 	violationRate := 0.1
 	if g.randSource.Float64() < violationRate {
 		return nil // No violation
 	}
-
 	violations := []string{
 		"Speeding",
 		"Running a red light",
@@ -901,7 +736,6 @@ func (g *ViolationGenerator) GenerateViolation() InfractionInfo {
 		"Failure to stop for a school bus",
 		"Other",
 	}
-
 	isPaid := ViolationFactory().IsPaidFine()
 	uuid := uuidGenerator()
 	randomIndex := g.randSource.Intn(len(violations))
@@ -911,15 +745,11 @@ func (g *ViolationGenerator) GenerateViolation() InfractionInfo {
 		IsPaid:    isPaid,
 	}
 }
-
-
-
 func (g *ViolationGenerator) ViolationType() string {
     violationRate := 0.1
     if g.randSource.Float64() < violationRate {
         return "" // No violation
     }
-
     violations := []string{
         "Speeding",
         "Running a red light",
@@ -940,33 +770,21 @@ func (g *ViolationGenerator) ViolationType() string {
         "Failure to stop for a school bus",
         "Other",
     }
-
     randomIndex := rand.Intn(len(violations))
     return violations[randomIndex]
 }
-
-
-
-
-
 func ViolationFactory() *ViolationInfo {
 	generator := &ViolationGenerator{
 		randSource: rand.New(rand.NewSource(time.Now().UnixNano())),
 	}
-
 	violation := generator.GenerateViolation()
 	if violation == nil {
 		return &ViolationInfo{}
 	}
-
 	return &ViolationInfo{
 		Violation: violation.ViolationType(),
 	}
 }
-
-
-
-
 func main() {
 	config := kafka.NewKafkaConfiguration()
 	producer, err := kafka.NewKafkaProducer(config)
@@ -974,60 +792,39 @@ func main() {
 		fmt.Printf("Error creating Kafka producer: %v\n", err)
 		return
 	}
-
 	defer producer.Producer.Close()
-
-	
 	go func() {
 		for {
 			trafficGen := NewTrafficGenerator()
 			fmt.Printf("Traffic info: %+v\n", trafficGen) // Print the traffic info
-
 			trafficJSON, err := json.Marshal(trafficGen) // Convert to JSON
 			if err != nil {
 				fmt.Printf("Error converting to JSON: %v\n", err)
 				continue
 			}
-
 			// Send the traffic information to Kafka
 			producer.SendMessage("traffic-topic", string(trafficJSON))
 			// fmt.Printf("Sending message to Kafka: %s\n", string(trafficJSON))
-
 			time.Sleep(3 * time.Second)
 		}
 	}()
-
-	
 	select {}
 }
-
-
-
-
-
-
 func (ai AcidenteInfo) TipoAcidente() string {
 	return ai.Tipo
 }
-
 func (ai AcidenteInfo) NivelSeveridade() int {
 	return ai.Severidade
 }
-
 func (ai AcidenteInfo) NumeroVitimas() int {
 	return ai.Vitimas
 }
-
 func (ai AcidenteInfo) DataAcidente() string {
 	return ai.Data
 }
-
 func (ai AcidenteInfo) HoraAcidente() string {
 	return ai.Hora
 }
-
-
-
 func geraTipoAcidente() AcidenteInfo {
 	acidenteRate := 0.1
 	if rand.ExpFloat64() < acidenteRate {
@@ -1039,11 +836,9 @@ func geraTipoAcidente() AcidenteInfo {
 	}
 	return AcidenteInfo{}
 }
-
 // Função para gerar a severidade de um acidente
 func geraSeveridadeAcidente() AcidenteInfo {
 	gerador := rand.New(rand.NewSource(42))
-
 	severidadeRates := []float64{0.3, 0.2, 0.2, 0.15, 0.15}
 	for i, rate := range severidadeRates {
 		if gerador.ExpFloat64() < rate {
@@ -1055,7 +850,6 @@ func geraSeveridadeAcidente() AcidenteInfo {
 	}
 	return AcidenteInfo{}
 }
-
 // Função para gerar um acidente
 // Função para gerar um acidente
 func AcidenteFactory() *AcidenteInfo {
@@ -1066,7 +860,6 @@ func AcidenteFactory() *AcidenteInfo {
 		data := (&DateGenerator{}).Generate()
 		hora := (&TimeGenerator{}).Generate()
 		vitimas := geraVitimas()
-
 		return &AcidenteInfo{
 			Tipo:       tipo.TipoAcidente(),
 			Severidade: severidade.NivelSeveridade(),
@@ -1078,30 +871,21 @@ func AcidenteFactory() *AcidenteInfo {
 		return &AcidenteInfo{}
 	}
 }
-
-
-
 func geraVitimas() int {
 	gerador := rand.New(rand.NewSource(42))
-
 	vitimasRate := []float64{0.25, 0.2, 0.13, 0.09, 0.07}
 	for i, rate := range vitimasRate {
 		if gerador.ExpFloat64() < rate {
 			return i + 1
 		}
 	}
-
-	
 	return 0
 }
-
-
 type TrafficGenerator struct {
 	TrafficInfo      CarInfo       `json:"trafficInfo"`
 	Infraction ViolationInfo `json:"infraction"`
 	Acidente  AcidenteInfo  `json:"acidente"`
 }
-
 func NewTrafficGenerator() *TrafficGenerator {
 	return &TrafficGenerator{
 		TrafficInfo:       *CarFactory(),
@@ -1109,12 +893,7 @@ func NewTrafficGenerator() *TrafficGenerator {
 		Infraction: *ViolationFactory(),
 	}
 }
-
-
-
 func uuidGenerator() string {
 	uuid := uuid.New().String()
 	return uuid
 }
-
-
