@@ -45,12 +45,12 @@ func TestTrafficGenerator(t *testing.T) {
 func TestDateGenerator(t *testing.T) {
 	generator := NewDateGenerator()
 
-	// Generate dates and ensure they match the expected format
+	
 	for i := 0; i < 10; i++ {
 		date := generator.Generate()
 		log.Print("Date: ", date)
 
-		// Use regex to match the date format YYYY-MM-DD
+		
 		match := regexp.MustCompile(`^\d{4}-\d{1,2}-\d{1,2}$`).MatchString(date)
 		assert.True(t, match, "Invalid date format: %s", date)
 	}
@@ -59,7 +59,7 @@ func TestDateGenerator(t *testing.T) {
 func TestMaxSpeedGenerator(t *testing.T) {
 	generator := NewMaxSpeedGenerator()
 
-	// Generate max speeds and ensure they are within the expected range
+	
 	for i := 0; i < 10; i++ {
 		maxSpeed := generator.Generate()
 		assert.GreaterOrEqual(t, maxSpeed, 30, "Max speed should be greater than or equal to 30")
@@ -70,12 +70,12 @@ func TestMaxSpeedGenerator(t *testing.T) {
 func TestTimeGenerator(t *testing.T) {
 	generator := NewTimeGenerator()
 
-	// Generate times and ensure they match the expected format
+	
 
 		time := generator.Generate()
 		log.Println("Time: ", time)
 
-		// Use regex to match the time format HH:MM:SS
+		
 		match := regexp.MustCompile(`^\d{1,2}:\d{2}:\d{2}$`).MatchString(time)
 		assert.True(t, match, "Invalid time format: %s", time)
 
@@ -97,7 +97,7 @@ func TestSpeedGenerator(t *testing.T) {
 func TestAddressGenerator(t *testing.T) {
 	generator := NewAddressGenerator()
 
-	// Generate addresses and ensure they are not empty
+	
 	for i := 0; i < 10; i++ {
 		address := generator.Generate()
 		assert.NotEmpty(t, address, "Address should not be empty")
@@ -107,7 +107,7 @@ func TestAddressGenerator(t *testing.T) {
 func TestDirectionGenerator(t *testing.T) {
 	generator := NewDirectionGenerator()
 
-	// Generate directions and ensure they are in the predefined list
+	
 	for i := 0; i < 10; i++ {
 		direction := generator.Generate()
 		assert.Contains(t, []string{"North", "South", "East", "West"}, direction, "Invalid direction")
@@ -117,7 +117,7 @@ func TestDirectionGenerator(t *testing.T) {
 func TestStreetDirectionGenerator(t *testing.T) {
 	generator := NewStreetDirectionGenerator()
 
-	// Generate street directions and ensure they are in the predefined list
+	
 	for i := 0; i < 10; i++ {
 		streetDirection := generator.Generate()
 		assert.Contains(t, []string{"North", "South", "East", "West"}, streetDirection, "Invalid street direction")
